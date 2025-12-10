@@ -16,17 +16,22 @@ class ClientController extends ChangeNotifier {
     )
   ];
 
+  /// Agregar un cliente
   void addClient(ClientModel client) {
     clients.add(client);
     notifyListeners();
   }
 
+  /// Actualizar un cliente existente
   void updateClient(ClientModel updated) {
     final index = clients.indexWhere((c) => c.id == updated.id);
-    clients[index] = updated;
-    notifyListeners();
+    if (index != -1) {
+      clients[index] = updated;
+      notifyListeners();
+    }
   }
 
+  /// Eliminar cliente por ID
   void removeClient(String id) {
     clients.removeWhere((c) => c.id == id);
     notifyListeners();
