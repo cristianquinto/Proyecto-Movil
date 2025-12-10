@@ -21,7 +21,9 @@ class ClientListPage extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: "Buscar cliente...",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               onChanged: (_) => controller.notifyListeners(),
             ),
@@ -35,7 +37,13 @@ class ClientListPage extends StatelessWidget {
                       .contains(searchCtrl.text.toLowerCase()))
                   .map(
                     (c) => ListTile(
-                      leading: CircleAvatar(child: Text(c.name[0])),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blue,  
+                        child: Text(
+                          c.name[0],
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                       title: Text("${c.name} ${c.lastName}"),
                       subtitle: Text(c.phone),
                       trailing: Chip(
@@ -52,12 +60,13 @@ class ClientListPage extends StatelessWidget {
                   )
                   .toList(),
             ),
-          )
+          ),
         ],
       ),
 
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
@@ -70,11 +79,12 @@ class ClientListPage extends StatelessWidget {
 
   Color _statusColor(String status) {
     switch (status) {
-      case "Activo": return Colors.green;
-      case "Inactivo": return Colors.grey;
-      case "Potencial": return Colors.blue;
-      case "Bloqueado": return Colors.red;
-      default: return Colors.black;
+      case "Activo":
+        return const Color.fromARGB(255, 66, 173, 70);
+      case "Inactivo":
+        return Colors.grey;
+      default:
+        return Colors.black;
     }
   }
 }

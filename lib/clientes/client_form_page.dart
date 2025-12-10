@@ -48,7 +48,7 @@ class _ClientFormPageState extends State<ClientFormPage> {
       appBar: AppBar(
         title: Text(widget.editClient == null
             ? "Registrar Cliente"
-            : "Editar Cliente"),
+            : "Editar Cliente"), 
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -73,17 +73,19 @@ class _ClientFormPageState extends State<ClientFormPage> {
               Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(8)),
+                  
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Estado del Cliente",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15)),
-                    ...["Activo", "Inactivo", "Potencial", "Bloqueado"]
+                    ...["Activo", "Inactivo"]
                         .map(
                           (op) => RadioListTile(
+                            fillColor:MaterialStateProperty.all(Colors.blue),
                             value: op,
                             title: Text(op),
                             groupValue: status,
@@ -97,9 +99,12 @@ class _ClientFormPageState extends State<ClientFormPage> {
               SizedBox(height: 20),
 
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
                 child: Text(widget.editClient == null
                     ? "Guardar Cliente"
-                    : "Actualizar Cliente"),
+                    : "Actualizar Cliente",style: TextStyle(color: Colors.white),),
                 onPressed: () {
                   if (!formKey.currentState!.validate()) return;
 
@@ -140,8 +145,11 @@ class _ClientFormPageState extends State<ClientFormPage> {
         validator: validator,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
-        ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        )
+
       ),
     );
   }
