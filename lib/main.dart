@@ -1,15 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Módulo clientes
+// Importa tus módulos existentes
 import 'clientes/client_controller.dart';
 import 'clientes/client_list_page.dart';
+
+// =========================================================
+// MÓDULOS DEL CATÁLOGO DE REPUESTOS (Nuevas Importaciones)
+// =========================================================
+import 'screens/home_screen.dart'; // Tu nueva pantalla de inicio de repuestos
+import 'screens/catalog_screen.dart';
+import 'screens/cart_screen.dart';
+// Note: product.dart y product_detail_screen.dart no necesitan importarse aquí
+// ya que solo se llaman desde otras screens.
+
+// Define un controlador de estado simple para el carrito (opcional, pero buena práctica)
+// Si no quieres crear un archivo aparte, puedes usar este placeholder:
+class CartController with ChangeNotifier {
+  // Aquí iría la lógica de añadir/eliminar productos del carrito
+  int get itemCount => 0; // Ejemplo
+}
+
+// Color corporativo de repuestos (Azul Claro)
+const Color primaryColorParts = Color(0xFF81D4FA);
+
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
+        // Proveedores existentes
         ChangeNotifierProvider(create: (_) => ClientController()),
+        
+        // Nuevo Proveedor para el Carrito/Catálogo
+        ChangeNotifierProvider(create: (_) => CartController()), 
       ],
       child: const MainApp(),
     ),
@@ -24,39 +48,69 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int currentIndex = 0;
+  // Ajustamos el índice si la vista del catálogo es la que quieres por defecto
+  int currentIndex = 0; 
+  
+  // Puedes usar 0 para 'Inicio' (la vista de dulces) o 1 para 'Catálogo' (si ese es el foco)
 
   @override
   Widget build(BuildContext context) {
+    // Definimos las páginas, reemplazando tus placeholders con las pantallas reales.
     final pages = [
-      _homeView(),           // Tu pantalla original
-      _placeholder("Menú"),
-      _placeholder("Carrito"),
+      // 0. Pestaña de 'Inicio' (Tu vista original de 'Dulce Delicia' - No repuestos)
+      _homeView(), 
+      
+      // 1. Pestaña 'Menú' -> Ahora será el Catálogo de Repuestos
+      const CatalogScreen(),
+      
+      // 2. Pestaña 'Carrito' -> Ahora será la Pantalla de Carrito de Repuestos
+      const CartScreen(),
+      
+      // 3. Pestaña 'Pedidos'
       _placeholder("Pedidos"),
-      ClientListPage(),      // Vista de clientes funcionando
+      
+      // 4. Pestaña 'Clientes'
+      ClientListPage(), 
     ];
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // Aplicamos el tema general aquí. Puedes usar el color de dulces (pink) o el de repuestos (blue)
+      theme: ThemeData(
+        primaryColor: Colors.pink, // Mantenemos el color rosa para la app general
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 1,
+        ),
+      ),
       home: Scaffold(
         backgroundColor: const Color.fromARGB(255, 245, 245, 245),
         appBar: AppBar(
-          title: const Text("Jtools app"),
+          title: Text(
+            // Título dinámico basado en la pestaña
+            _getAppTitle(currentIndex),
+            style: TextStyle(
+              color: currentIndex == 0 ? Colors.black : primaryColorParts,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
 
         body: pages[currentIndex],
 
+        // Navegación inferior
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: currentIndex,
-          selectedItemColor: Colors.pink,
+          selectedItemColor: Colors.pink, // Color seleccionado de dulces
           unselectedItemColor: Colors.black54,
           onTap: (i) => setState(() => currentIndex = i),
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-            BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menú'),
+            BottomNavigationBarItem(icon: Icon(Icons.cake), label: 'Dulces'), // Cambié el icono
+            BottomNavigationBarItem(icon: Icon(Icons.car_repair), label: 'Repuestos'), // Catálogo
             BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart_outlined), label: 'Carrito'),
+                icon: Icon(Icons.shopping_cart_outlined), label: 'Carrito'), // Carrito
             BottomNavigationBarItem(
                 icon: Icon(Icons.receipt_long), label: 'Pedidos'),
             BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Clientes'),
@@ -65,12 +119,33 @@ class _MainAppState extends State<MainApp> {
       ),
     );
   }
+  
+  // Función para título dinámico
+  String _getAppTitle(int index) {
+    switch (index) {
+      case 0:
+        return 'Dulce Delicia';
+      case 1:
+        return 'Catálogo de Repuestos';
+      case 2:
+        return 'Mi Carrito';
+      case 3:
+        return 'Historial de Pedidos';
+      case 4:
+        return 'Gestión de Clientes';
+      default:
+        return 'Jtools app';
+    }
+  }
 
   // =======================================================================
-  // === 1. TU PANTALLA ORIGINAL DE INICIO (SIN MODIFICACIONES) ============
+  // === 1. TU PANTALLA ORIGINAL DE INICIO (DULCES) ========================
   // =======================================================================
 
   Widget _homeView() {
+    // Nota: Mantuve el código original de tu _homeView aquí.
+    // Si quieres un enfoque más limpio, idealmente crearías un archivo
+    // 'screens/sweets_home_screen.dart' y lo importarías, como hicimos con los repuestos.
     return Column(
       children: [
         Expanded(
@@ -80,28 +155,9 @@ class _MainAppState extends State<MainApp> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // === CABECERA ===
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      const Text(
-                        'Dulce Delicia',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.shopping_cart_outlined,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
+                  // Eliminamos la cabecera ya que ahora el AppBar lo maneja.
                   const Text(
-                    'Categorías',
+                    'Categorías de Dulces',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
 
@@ -145,7 +201,7 @@ class _MainAppState extends State<MainApp> {
   }
 
   // =======================================================================
-  // === COMPARTIDO PARA TARJETAS (TAL COMO LO TENÍAS) ======================
+  // === COMPARTIDO PARA TARJETAS (DULCES) =================================
   // =======================================================================
 
   static Widget buildCard({
@@ -156,17 +212,18 @@ class _MainAppState extends State<MainApp> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        boxShadow: const [
+        color: Colors.white, // Fondo blanco para la tarjeta
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
           BoxShadow(
-              color: Colors.white12, blurRadius: 6, offset: Offset(0, 3)),
+              color: Colors.grey.withOpacity(0.1), blurRadius: 6, offset: const Offset(0, 3)),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Image.network(
               imageUrl,
               height: 160,
@@ -179,23 +236,27 @@ class _MainAppState extends State<MainApp> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      description,
-                      style: const TextStyle(color: Colors.black54),
-                    ),
-                  ],
+                      const SizedBox(height: 5),
+                      Text(
+                        description,
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(width: 20),
+                // Botón de Ver Más
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.pink,
@@ -216,14 +277,15 @@ class _MainAppState extends State<MainApp> {
     );
   }
 
+
   // =======================================================================
-  // === PLACEHOLDER PARA OTRAS PESTAÑAS ===================================
+  // === PLACEHOLDER (Para pantallas no implementadas) ======================
   // =======================================================================
 
   Widget _placeholder(String text) {
     return Center(
       child: Text(
-        text,
+        'Página de $text en desarrollo...',
         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
       ),
     );
