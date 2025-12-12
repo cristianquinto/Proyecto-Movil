@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'pedidos/pedido_controller.dart';
+import 'pedidos/pedidos_page.dart';
 
 // Importa tus módulos existentes
 import 'clientes/client_controller.dart';
@@ -31,7 +33,7 @@ void main() {
       providers: [
         // Proveedores existentes
         ChangeNotifierProvider(create: (_) => ClientController()),
-        
+        ChangeNotifierProvider(create: (_) => PedidoController()),
         // Nuevo Proveedor para el Carrito/Catálogo
         ChangeNotifierProvider(create: (_) => CartController()), 
       ],
@@ -57,6 +59,11 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     // Definimos las páginas, reemplazando tus placeholders con las pantallas reales.
     final pages = [
+      _homeView(), // Tu pantalla original
+      _placeholder("Menú"),
+      _placeholder("Carrito"),
+      PedidosPage(), // Módulo de Pedidos
+      ClientListPage(), // Vista de clientes funcionando
       // 0. Pestaña de 'Inicio' (Tu vista original de 'Dulce Delicia' - No repuestos)
       _homeView(), 
       
@@ -68,9 +75,6 @@ class _MainAppState extends State<MainApp> {
       
       // 3. Pestaña 'Pedidos'
       _placeholder("Pedidos"),
-      
-      // 4. Pestaña 'Clientes'
-      ClientListPage(), 
     ];
 
     return MaterialApp(

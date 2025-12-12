@@ -38,7 +38,7 @@ class ClientListPage extends StatelessWidget {
                   .map(
                     (c) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.blue,  
+                        backgroundColor: Colors.blue,
                         child: Text(
                           c.name[0],
                           style: TextStyle(color: Colors.white),
@@ -46,12 +46,20 @@ class ClientListPage extends StatelessWidget {
                       ),
                       title: Text("${c.name} ${c.lastName}"),
                       subtitle: Text(c.phone),
-                      trailing: Chip(
-                        label: Text(c.status),
-                        backgroundColor: _statusColor(c.status),
-                      ),
+
+                      // 👉 Aquí ponemos el ícono en vez del Chip
+                       trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _statusIcon(c.status), // Activo/Inactivo
+                          SizedBox(width: 10),
+                          Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                        ],
+
+                     ),
                       onTap: () => Navigator.push(
                         context,
+                         
                         MaterialPageRoute(
                           builder: (_) => ClientDetailPage(client: c),
                         ),
@@ -77,14 +85,20 @@ class ClientListPage extends StatelessWidget {
     );
   }
 
-  Color _statusColor(String status) {
+  // -------------------------------
+  // ÍCONO DE ACTIVO / INACTIVO
+  // -------------------------------
+  Widget _statusIcon(String status) {
     switch (status) {
       case "Activo":
-        return const Color.fromARGB(255, 66, 173, 70);
+        return const Icon(Icons.check_circle, color: Colors.green, size: 28);
+
+
       case "Inactivo":
-        return Colors.grey;
+        return const Icon(Icons.remove_circle, color: Color.fromARGB(255, 83, 71, 70), size: 28);
+
       default:
-        return Colors.black;
+        return const Icon(Icons.help, color: Colors.grey, size: 28);
     }
   }
 }
