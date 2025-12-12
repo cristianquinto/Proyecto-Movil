@@ -12,10 +12,10 @@ class SeleccionarProductosPage extends StatefulWidget {
 class _SeleccionarProductosPageState extends State<SeleccionarProductosPage> {
   // catálogo base (puedes reemplazar por fetch desde API)
   final List<PedidoItem> catalogo = [
-    PedidoItem(nombre: 'Pastel', precio: 12000.0),
-    PedidoItem(nombre: 'Galletas', precio: 10000.0),
-    PedidoItem(nombre: 'Flan', precio: 7000.0),
-    PedidoItem(nombre: 'Cupcake', precio: 5000.0),
+    PedidoItem(nombre: 'Valvula pvc', precio: 12000.0),
+    PedidoItem(nombre: 'Caucho pvc', precio: 10000.0),
+    PedidoItem(nombre: 'Vavula metalica', precio: 7000.0),
+    PedidoItem(nombre: 'Dedo selector Logan', precio: 5000.0),
   ];
 
   final List<PedidoItem> seleccionados = [];
@@ -69,7 +69,7 @@ class _SeleccionarProductosPageState extends State<SeleccionarProductosPage> {
                       trailing: ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                         onPressed: () => _addOrIncrease(p),
-                        child: const Text('Agregar'),
+                        child: const Text('Agregar', style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   );
