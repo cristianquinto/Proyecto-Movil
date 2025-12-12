@@ -1,14 +1,8 @@
+// pedido_detalle_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-// PDF
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
-import 'package:pdf/pdf.dart';
-
-// Controlador y modelo
-import 'pedido_controller.dart';
 import 'pedido_model.dart';
+import 'pedido_controller.dart';
 
 class PedidoDetallePage extends StatelessWidget {
   final Pedido pedido;
@@ -17,167 +11,148 @@ class PedidoDetallePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<PedidoController>(context);
+    final controller = Provider.of<PedidoController>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pedido ${pedido.id}"),
-        backgroundColor: Colors.blue,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () => _generarPdf(context),
-            tooltip: 'Ver PDF',
-          ),
-        ],
+        title: const Text('Detalles del pedido'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Fecha: ${pedido.fecha.toString().substring(0, 16)}",
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 8),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        children: [
+          const Text('Información del pedido', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
 
-            Text(
-              "Estado: ${pedido.estado}",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+          _infoRow('Número del pedido', pedido.id),
+          const SizedBox(height: 8),
+          _infoRow('Fecha del pedido', "${pedido.fecha.day} ${_mesNombre(pedido.fecha.month)} ${pedido.fecha.year}"),
+          const SizedBox(height: 8),
+          _infoRow('Estado del pedido', pedido.estado),
+          const SizedBox(height: 16),
 
-            const SizedBox(height: 14),
-            const Text(
-              "Productos:",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+          const Divider(),
 
-            const SizedBox(height: 8),
+          const SizedBox(height: 12),
+          const Text('Productos', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
 
-            // LISTA DE PRODUCTOS
-            Expanded(
-              child: ListView(
-                children: pedido.items.map((it) {
-                  return ListTile(
-                    title: Text(it.nombre),
-                    subtitle:
-                        Text('Precio: \$${it.precio.toStringAsFixed(0)}'),
-                    trailing: Text('x ${it.cantidad}'),
-                  );
-                }).toList(),
-              ),
-            ),
+          // lista de productos
+          ...pedido.items.map((it) {
+            return ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(it.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
+              subtitle: Text('Cantidad: ${it.cantidad}'),
+              trailing: Text('\$${(it.precio * it.cantidad).toStringAsFixed(2)}'),
+            );
+          }).toList(),
 
-            const SizedBox(height: 8),
+          const SizedBox(height: 12),
+          const Divider(),
+          const SizedBox(height: 8),
 
-            // TOTAL
-            Text(
-              'Total: \$${pedido.total.toStringAsFixed(0)}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          // resumen
+          const Text('Resumen del pedido', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          _resumenRow('Subtotal', '\$${pedido.subtotal.toStringAsFixed(2)}'),
+          _resumenRow('Envío', '\$${pedido.envioCosto.toStringAsFixed(2)}'),
+          const SizedBox(height: 8),
+          const Divider(),
+          _resumenRowBold('Total', '\$${pedido.total.toStringAsFixed(2)}'),
 
-            const SizedBox(height: 12),
+          const SizedBox(height: 18),
+          const Divider(),
+          const SizedBox(height: 12),
 
-            // BOTONES
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                    onPressed: () {
-                      controller.cambiarEstado(pedido, 'Completado');
+          const Text('Información de Envío', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(pedido.envio.direccion),
+          const SizedBox(height: 6),
+          Text('Método de pago: ${pedido.envio.metodoPago}'),
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Pedido marcado como Completado'),
-                        ),
-                      );
-                    },
-                    child: const Text('Marcar como completado'),
-                  ),
+          const SizedBox(height: 22),
+
+          // botones acciones: cambiar estado / cancelar
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  onPressed: () {
+                    controller.cambiarEstado(pedido, 'Enviado');
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Estado actualizado a Enviado')));
+                  },
+                  child: const Text('Marcar como Enviado'),
                 ),
-
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    onPressed: () {
-                      controller.cancelarPedido(pedido);
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Cancelar pedido'),
-                  ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  onPressed: () {
+                    controller.cancelarPedido(pedido);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancelar pedido'),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }
 
-  // --------------------------
-  // PDF GENERATOR
-  // --------------------------
-  Future<void> _generarPdf(BuildContext context) async {
-    final doc = pw.Document();
+  Widget _infoRow(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+        const SizedBox(height: 4),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+      ],
+    );
+  }
 
-    doc.addPage(
-      pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        build: (pw.Context ctx) {
-          return [
-            pw.Header(
-              level: 0,
-              child: pw.Text(
-                'Pedido ${pedido.id}',
-                style: pw.TextStyle(fontSize: 24),
-              ),
-            ),
-
-            pw.Text('Fecha: ${pedido.fecha.toString().substring(0, 16)}'),
-            pw.SizedBox(height: 12),
-
-            pw.Text('Estado: ${pedido.estado}'),
-            pw.Divider(),
-
-            pw.Table.fromTextArray(
-              headers: ['Producto', 'Precio', 'Cantidad', 'Subtotal'],
-              data: pedido.items.map((it) {
-                final subtotal = it.precio * it.cantidad;
-                return [
-                  it.nombre,
-                  '\$${it.precio.toStringAsFixed(0)}',
-                  '${it.cantidad}',
-                  '\$${subtotal.toStringAsFixed(0)}'
-                ];
-              }).toList(),
-            ),
-
-            pw.Divider(),
-
-            pw.Align(
-              alignment: pw.Alignment.centerRight,
-              child: pw.Text(
-                'Total: \$${pedido.total.toStringAsFixed(0)}',
-                style: pw.TextStyle(
-                    fontSize: 16, fontWeight: pw.FontWeight.bold),
-              ),
-            ),
-          ];
-        },
+  Widget _resumenRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(label, style: TextStyle(color: Colors.grey.shade700)), Text(value)],
       ),
     );
+  }
 
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => doc.save(),
+  Widget _resumenRowBold(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(label, style: const TextStyle(fontWeight: FontWeight.bold)), Text(value, style: const TextStyle(fontWeight: FontWeight.bold))],
+      ),
     );
+  }
+
+  String _mesNombre(int mes) {
+    const meses = [
+      '',
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre'
+    ];
+    return meses[mes];
   }
 }

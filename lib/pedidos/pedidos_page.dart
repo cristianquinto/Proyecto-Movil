@@ -1,122 +1,213 @@
+// pedidos_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pedido_controller.dart';
-import 'pedido_detalle_page.dart';
-import 'seleccionar_productos_page.dart';
 import 'pedido_model.dart';
+import 'pedido_detalle_page.dart';
 
-class PedidosPage extends StatelessWidget {
+class PedidosPage extends StatefulWidget {
   const PedidosPage({super.key});
+
+  @override
+  State<PedidosPage> createState() => _PedidosPageState();
+}
+
+class _PedidosPageState extends State<PedidosPage> {
+  String estadoFiltro = 'Todos';
+  final List<String> estados = ['Todos', 'Pendiente', 'Entregado', 'Cancelado'];
 
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<PedidoController>(context);
+    final pedidos = controller.pedidosFiltrados(estado: estadoFiltro);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Pedidos"),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        title: const Text('Todos los pedidos'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () async {
-          // abre la pantalla de selección y registra pedido si hay items
-          final result = await Navigator.push<List<PedidoItem>?>(
-            context,
-            MaterialPageRoute(builder: (_) => SeleccionarProductosPage()),
-          );
-          if (result != null && result.isNotEmpty) {
-            Provider.of<PedidoController>(context, listen: false)
-                .registrarPedido(result);
-          }
-        },
+
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
+          children: [
+            // FILTROS (sin botón)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: _buildFechaDropdown()),
+                const SizedBox(width: 12),
+                SizedBox(width: 160, child: _buildEstadoDropdown()),
+              ],
+            ),
+
+            const SizedBox(height: 18),
+
+            // LISTA DE PEDIDOS
+            Expanded(
+              child: ListView.separated(
+                itemCount: pedidos.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final p = pedidos[index];
+                  return _pedidoCard(context, p);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        children: [
-          const Text(
-            "Pedidos actuales",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
+    );
+  }
 
-          // pedidos actuales
-          ...controller.pedidosActuales.map((p) => _pedidoCard(context, p)),
+  // ------------------------
+  //     WIDGETS UI
+  // ------------------------
 
-          const SizedBox(height: 22),
-          const Text(
-            "Pedidos anteriores",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
+  Widget _buildFechaDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: 'Fecha',
+          items: const [
+            DropdownMenuItem(value: 'Fecha', child: Text('Fecha')),
+          ],
+          onChanged: (_) {},
+          icon: const Icon(Icons.keyboard_arrow_down),
+        ),
+      ),
+    );
+  }
 
-          ...controller.pedidosAnteriores.map((p) => _pedidoCard(context, p)),
-          const SizedBox(height: 40),
-        ],
+  Widget _buildEstadoDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: estadoFiltro,
+          items: estados
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (v) => setState(() => estadoFiltro = v ?? 'Todos'),
+          icon: const Icon(Icons.keyboard_arrow_down),
+        ),
       ),
     );
   }
 
   Widget _pedidoCard(BuildContext context, Pedido pedido) {
-    final formattedDate =
-        "${pedido.fecha.day} de ${_mesNombre(pedido.fecha.month)} de ${pedido.fecha.year}";
+    final colorEstado = _estadoColor(pedido.estado);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade100),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 6),
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6)
         ],
       ),
       child: Row(
         children: [
-          // info
+          // Información
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formattedDate,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w600)),
+                Row(
+                  children: [
+                    Text(
+                      'Pedido #${pedido.id}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text('-', style: TextStyle(color: Colors.grey.shade400)),
+                    const SizedBox(width: 8),
+                    Text(
+                      pedido.estado,
+                      style: TextStyle(
+                        color: colorEstado,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 6),
                 Text(
-                  "Pedido ${pedido.id}",
-                  style: const TextStyle(color: Colors.blue),
+                  'Cliente: ${pedido.cliente}',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "${pedido.fecha.day} de ${_mesNombre(pedido.fecha.month)} de ${pedido.fecha.year}",
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
           ),
 
-          // botones
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey.shade100,
-              elevation: 0,
-              side: BorderSide(color: Colors.grey.shade200),
+          // BOTÓN VER DETALLES
+          OutlinedButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => PedidoDetallePage(pedido: pedido),
+              ),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => PedidoDetallePage(pedido: pedido)),
-              );
-            },
-            child: const Text("Ver Detalles", style: TextStyle(color: Colors.black)),
+            style: OutlinedButton.styleFrom(
+              backgroundColor: Colors.blue.shade50,
+              side: BorderSide(color: Colors.blue.shade100),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            ),
+            child: const Text(
+              'Ver detalles',
+              style: TextStyle(color: Colors.blue),
+            ),
           ),
         ],
       ),
     );
   }
 
-  static String _mesNombre(int mes) {
+  // ------------------------
+  //   HELPERS
+  // ------------------------
+
+  Color _estadoColor(String estado) {
+    switch (estado.toLowerCase()) {
+      case 'entregado':
+        return Colors.green;
+      case 'pendiente':
+        return Colors.orange;
+      case 'cancelado':
+        return Colors.red;
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
+  String _mesNombre(int mes) {
     const meses = [
       '',
       'enero',
