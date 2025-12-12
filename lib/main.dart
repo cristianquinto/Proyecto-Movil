@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'pedidos/pedido_controller.dart';
+import 'pedidos/pedidos_page.dart';
 
 // Módulo clientes
 import 'clientes/client_controller.dart';
@@ -10,6 +12,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ClientController()),
+        ChangeNotifierProvider(create: (_) => PedidoController()),
+
       ],
       child: const MainApp(),
     ),
@@ -29,11 +33,11 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      _homeView(),           // Tu pantalla original
+      _homeView(), // Tu pantalla original
       _placeholder("Menú"),
       _placeholder("Carrito"),
-      _placeholder("Pedidos"),
-      ClientListPage(),      // Vista de clientes funcionando
+      PedidosPage(), // Módulo de Pedidos
+      ClientListPage(), // Vista de clientes funcionando
     ];
 
     return MaterialApp(
