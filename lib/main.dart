@@ -7,6 +7,8 @@ import 'pedidos/pedidos_page.dart';
 import 'clientes/client_controller.dart';
 import 'clientes/client_list_page.dart';
 
+import 'screens/recuperar.dart';
+
 // =========================================================
 // MÓDULOS DEL CATÁLOGO DE REPUESTOS (Nuevas Importaciones)
 // =========================================================

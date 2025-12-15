@@ -47,7 +47,7 @@ class PedidoDetallePage extends StatelessWidget {
               subtitle: Text('Cantidad: ${it.cantidad}'),
               trailing: Text('\$${(it.precio * it.cantidad).toStringAsFixed(2)}'),
             );
-          }).toList(),
+          }),
 
           const SizedBox(height: 12),
           const Divider(),
