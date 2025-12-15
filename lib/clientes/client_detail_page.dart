@@ -6,95 +6,134 @@ import 'client_form_page.dart';
 
 class ClientDetailPage extends StatelessWidget {
   final ClientModel client;
-  const ClientDetailPage({required this.client});
+  const ClientDetailPage({super.key, required this.client});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<ClientController>(context, listen: false);
+    final controller =
+        Provider.of<ClientController>(context, listen: false);
+
+    final isSmallScreen = MediaQuery.of(context).size.height < 700;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Detalles del Cliente")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.blue,
-              child: Text(
-                client.name.isNotEmpty ? client.name[0] : "",
-                style: TextStyle(fontSize: 40, color: Colors.white),
+      appBar: AppBar(
+        title: const Text("Detalles del Cliente"),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              /// 🔵 HEADER CENTRADO
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: isSmallScreen ? 30 : 40,
+                    backgroundColor: Colors.blue,
+                    child: Text(
+                      client.name.isNotEmpty ? client.name[0] : "",
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 28 : 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "${client.name} ${client.lastName}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 18 : 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    client.email,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Chip(
+                    label: Text(client.status),
+                    backgroundColor: client.status == "Activo"
+                        ? Colors.green.shade100
+                        : Colors.red.shade100,
+                    labelStyle: TextStyle(
+                      color: client.status == "Activo"
+                          ? Colors.green
+                          : Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
-            ),
 
-            SizedBox(height: 10),
+              const SizedBox(height: 30),
 
-            Text(
-              "${client.name} ${client.lastName}",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(client.email),
-            SizedBox(height: 20),
-
-            Chip(label: Text(client.status)),
-            SizedBox(height: 20),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
+              /// 📄 INFORMACIÓN
+              const Text(
                 "Información del Cliente",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            SizedBox(height: 10),
-
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _info("Teléfono", client.phone),
-                _info("Ciudad", client.city),
-                _info("Dirección", client.address),
-                if (client.company != null)
-                  _info("Empresa", client.company!),
-              ],
-            ),
-
-            SizedBox(height: 30),
-
-            // Botón Editar
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                minimumSize: Size(double.infinity, 45),
-              ),
-              child: Text(
-                "Editar Cliente",
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ClientFormPage(editClient: client),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
 
-            SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // Botón Eliminar
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                minimumSize: Size(double.infinity, 45),
+              _info("Teléfono", client.phone),
+              _info("Ciudad", client.city),
+              _info("Dirección", client.address),
+              if (client.company != null && client.company!.isNotEmpty)
+                _info("Empresa", client.company!),
+
+              const SizedBox(height: 30),
+
+              /// ✏️ BOTÓN EDITAR
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size(double.infinity, 45),
+                ),
+                child: const Text(
+                  "Editar Cliente",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ClientFormPage(editClient: client),
+                  ),
+                ),
               ),
-              child: Text(
-                "Eliminar Cliente",
-                style: TextStyle(color: Colors.white),
+
+              const SizedBox(height: 10),
+
+              /// 🗑 BOTÓN ELIMINAR
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  minimumSize: const Size(double.infinity, 45),
+                ),
+                child: const Text(
+                  "Eliminar Cliente",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () =>
+                    _confirmDelete(context, controller),
               ),
-              onPressed: () => _confirmDelete(context, controller),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -106,33 +145,42 @@ class ClientDetailPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextStyle(color: Colors.grey)),
-          Text(value, style: TextStyle(fontSize: 16)),
+          Text(title, style: const TextStyle(color: Colors.grey)),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+            softWrap: true,
+          ),
         ],
       ),
     );
   }
 
-  // CUADRO DE CONFIRMACIÓN  
-  void _confirmDelete(BuildContext context, ClientController controller) {
+  /// 🧾 CONFIRMACIÓN ELIMINAR
+  void _confirmDelete(
+      BuildContext context, ClientController controller) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Confirmar eliminación"),
-        content: Text("¿Seguro que quieres eliminar este cliente?"),
+        title: const Text("Confirmar eliminación"),
+        content: const Text(
+            "¿Seguro que quieres eliminar este cliente?"),
         actions: [
           TextButton(
-            child: Text("Cancelar"),
+            child: const Text("Cancelar"),
             onPressed: () => Navigator.pop(context),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: Text("Eliminar", style: TextStyle(color: Colors.white)),
+            style:
+                ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text(
+              "Eliminar",
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               controller.removeClient(client.id);
-
-              Navigator.pop(context); // Cierra el diálogo
-              Navigator.pop(context); // Vuelve a la lista
+              Navigator.pop(context);
+              Navigator.pop(context);
             },
           ),
         ],
