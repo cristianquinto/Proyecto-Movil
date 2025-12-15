@@ -6,7 +6,7 @@ import '../clientes/client_controller.dart';
 class ClientFormPage extends StatefulWidget {
   final ClientModel? editClient;
 
-  const ClientFormPage({this.editClient});
+  const ClientFormPage({super.key, this.editClient});
 
   @override
   State<ClientFormPage> createState() => _ClientFormPageState();
@@ -23,6 +23,7 @@ class _ClientFormPageState extends State<ClientFormPage> {
   late TextEditingController city;
   late TextEditingController company;
 
+  /// Estado por defecto
   String status = "Activo";
 
   @override
@@ -37,6 +38,7 @@ class _ClientFormPageState extends State<ClientFormPage> {
     city = TextEditingController(text: widget.editClient?.city ?? "");
     company = TextEditingController(text: widget.editClient?.company ?? "");
 
+    /// Si es editar, toma el estado real; si es crear → Activo
     status = widget.editClient?.status ?? "Activo";
   }
 
@@ -46,9 +48,11 @@ class _ClientFormPageState extends State<ClientFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.editClient == null
-            ? "Registrar Cliente"
-            : "Editar Cliente"), 
+        title: Text(
+          widget.editClient == null
+              ? "Registrar Cliente"
+              : "Editar Cliente",
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -60,75 +64,89 @@ class _ClientFormPageState extends State<ClientFormPage> {
               _field(lastName, "Apellidos"),
               _field(company, "Empresa (Opcional)"),
 
-              _field(email, "Correo Electrónico",
-                  validator: (v) => v!.contains("@") ? null : "Email inválido"),
+              _field(
+                email,
+                "Correo Electrónico",
+                validator: (v) =>
+                    v != null && v.contains("@") ? null : "Email inválido",
+              ),
 
               _field(phone, "Teléfono"),
               _field(address, "Dirección"),
               _field(city, "Ciudad"),
 
-              SizedBox(height: 15),
+              const SizedBox(height: 20),
 
-              /// 🔥 Selector de Estado dentro del formulario
-              Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Estado del Cliente",
+              /// 🔥 ESTADO SOLO EN EDITAR
+              if (widget.editClient != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Estado del Cliente",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15)),
-                    ...["Activo", "Inactivo"]
-                        .map(
-                          (op) => RadioListTile(
-                            fillColor:MaterialStateProperty.all(Colors.blue),
-                            value: op,
-                            title: Text(op),
-                            groupValue: status,
-                            onChanged: (v) =>
-                                setState(() => status = v.toString()),
-                          ),
-                        )
-                ]),
-              ),
-
-              SizedBox(height: 20),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      ...["Activo", "Inactivo"].map(
+                        (op) => RadioListTile(
+                          fillColor:
+                              MaterialStateProperty.all(Colors.blue),
+                          value: op,
+                          title: Text(op),
+                          groupValue: status,
+                          onChanged: (v) =>
+                              setState(() => status = v.toString()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                 ),
-                child: Text(widget.editClient == null
-                    ? "Guardar Cliente"
-                    : "Actualizar Cliente",style: TextStyle(color: Colors.white),),
+                child: Text(
+                  widget.editClient == null
+                      ? "Guardar Cliente"
+                      : "Actualizar Cliente",
+                  style: const TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   if (!formKey.currentState!.validate()) return;
 
-                  final newClient = ClientModel(
-                    id: widget.editClient?.id ?? DateTime.now().toString(),
-                    name: name.text,
-                    lastName: lastName.text,
-                    email: email.text,
-                    phone: phone.text,
-                    address: address.text,
-                    city: city.text,
-                    status: status,
-                    company: company.text,
+                  final client = ClientModel(
+                    id: widget.editClient?.id ??
+                        DateTime.now().toIso8601String(),
+                    name: name.text.trim(),
+                    lastName: lastName.text.trim(),
+                    email: email.text.trim(),
+                    phone: phone.text.trim(),
+                    address: address.text.trim(),
+                    city: city.text.trim(),
+                    company: company.text.trim(),
+                    status: status, // 👈 siempre Activo al crear
                   );
 
                   if (widget.editClient == null) {
-                    controller.addClient(newClient);
+                    controller.addClient(client);
                   } else {
-                    controller.updateClient(newClient);
+                    controller.updateClient(client);
                   }
 
                   Navigator.pop(context);
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -136,8 +154,11 @@ class _ClientFormPageState extends State<ClientFormPage> {
     );
   }
 
-  Widget _field(TextEditingController c, String label,
-      {String? Function(String?)? validator}) {
+  Widget _field(
+    TextEditingController c,
+    String label, {
+    String? Function(String?)? validator,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
@@ -148,8 +169,7 @@ class _ClientFormPageState extends State<ClientFormPage> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-        )
-
+        ),
       ),
     );
   }
