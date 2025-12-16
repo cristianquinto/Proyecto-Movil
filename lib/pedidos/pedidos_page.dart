@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'pedido_controller.dart';
 import 'pedido_model.dart';
 import 'pedido_detalle_page.dart';
+// import 'crear_pedido_page.dart'; // cuando la tengas
 
 class PedidosPage extends StatefulWidget {
   const PedidosPage({super.key});
@@ -27,13 +28,16 @@ class _PedidosPageState extends State<PedidosPage> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
+
+        /// ➕ BOTÓN AGREGAR PEDIDO ( + azul )
+      
       ),
 
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           children: [
-            // FILTROS (sin botón)
+            // FILTROS
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -99,7 +103,12 @@ class _PedidosPageState extends State<PedidosPage> {
         child: DropdownButton<String>(
           value: estadoFiltro,
           items: estados
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e),
+                ),
+              )
               .toList(),
           onChanged: (v) => setState(() => estadoFiltro = v ?? 'Todos'),
           icon: const Icon(Icons.keyboard_arrow_down),
@@ -118,12 +127,15 @@ class _PedidosPageState extends State<PedidosPage> {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey.shade100),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6)
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 6,
+          )
         ],
       ),
       child: Row(
         children: [
-          // Información
+          // INFO
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

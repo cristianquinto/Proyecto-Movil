@@ -84,7 +84,7 @@ class PedidoDetallePage extends StatelessWidget {
                     controller.cambiarEstado(pedido, 'Enviado');
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Estado actualizado a Enviado')));
                   },
-                  child: const Text('Marcar como Enviado'),
+                  child: const Text('Marcar como Enviado',style: TextStyle(color: Colors.white),),
                 ),
               ),
               const SizedBox(width: 10),
@@ -95,7 +95,7 @@ class PedidoDetallePage extends StatelessWidget {
                     controller.cancelarPedido(pedido);
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancelar pedido'),
+                  child: const Text('Cancelar pedido',style: TextStyle(color: Colors.white),),
                 ),
               ),
             ],
