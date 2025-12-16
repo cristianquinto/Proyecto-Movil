@@ -30,36 +30,7 @@ class _PedidosPageState extends State<PedidosPage> {
         elevation: 0,
 
         /// ➕ BOTÓN AGREGAR PEDIDO ( + azul )
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: () {
-                // 👉 Navegar a crear pedido
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (_) => const CrearPedidoPage(),
-                //   ),
-                // );
-              },
-              child: Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
-            ),
-          ),
-        ],
+      
       ),
 
       body: Padding(
