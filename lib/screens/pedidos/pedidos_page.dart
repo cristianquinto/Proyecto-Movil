@@ -1,8 +1,8 @@
 // pedidos_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pedido_controller.dart';
-import 'pedido_model.dart';
+import '../../controllers/pedido_controller.dart';
+import '../../models/pedido_model.dart';
 import 'pedido_detalle_page.dart';
 // import 'crear_pedido_page.dart'; // cuando la tengas
 

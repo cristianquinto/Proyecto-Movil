@@ -12,9 +12,9 @@ class CatalogScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Catálogo de Repuestos', style: TextStyle(color: primaryColor)),
         backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: primaryColor),
+        iconTheme: const IconThemeData(color: Color.fromRGBO(18, 128, 227, 1)
+),
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(50.0),
@@ -23,14 +23,16 @@ class CatalogScreen extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Buscar por Nombre, Marca o No. Parte...',
-                prefixIcon: const Icon(Icons.search, color: primaryColor),
+                prefixIcon: const Icon(Icons.search, color: Color.fromRGBO(18, 128, 227, 1)
+),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.0),
-                  borderSide: const BorderSide(color: primaryColor),
+                  borderSide: const BorderSide(color: Color.fromRGBO(18, 128, 227, 1)
+),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.0),
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                  borderSide: BorderSide(color: Color.fromRGBO(18, 129, 227, 0.425)),
                 ),
                 contentPadding: const EdgeInsets.all(10.0),
               ),
@@ -42,7 +44,7 @@ class CatalogScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // Dos tarjetas por fila
-          childAspectRatio: 0.75, // Proporción para que la tarjeta sea más alta
+          childAspectRatio: 0.75, // Ajustado para una proporción más equilibrada
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
@@ -74,13 +76,14 @@ class ProductGridItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Simulación de Imagen
+            // Imagen simulada
             Container(
-              height: 120,
+              height: 160,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                // Aquí iría Image.network(product.imageUrl)
+                Image.asset('assets/images/BIELETACLIO.jpg')
+                // Aquí iría Image.network(product.imageUrl) si tuvieses una imagen
               ),
               alignment: Alignment.center,
               child: const Icon(Icons.car_repair, size: 50, color: primaryColor),
@@ -90,22 +93,25 @@ class ProductGridItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Título del producto con control de desbordamiento
                   Text(
                     product.name,
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2, // Limita el texto a 2 líneas
+                    overflow: TextOverflow.ellipsis, // Evita que el texto se desborde
                   ),
                   const SizedBox(height: 4),
+                  // No. de parte del producto
                   Text(
                     'No. Parte: ${product.partNumber}',
                     style: TextStyle(color: Colors.grey[600], fontSize: 12),
                   ),
                   const SizedBox(height: 8),
+                  // Precio del producto
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      color: primaryColor,
+                      color: Color.fromRGBO(18, 128, 227, 1),
                       fontWeight: FontWeight.w900,
                       fontSize: 16,
                     ),

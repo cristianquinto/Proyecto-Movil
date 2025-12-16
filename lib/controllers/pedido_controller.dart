@@ -1,6 +1,6 @@
 // pedido_controller.dart
 import 'package:flutter/material.dart';
-import 'pedido_model.dart';
+import '../models/pedido_model.dart';
 
 class PedidoController extends ChangeNotifier {
   final List<Pedido> _pedidos = [];

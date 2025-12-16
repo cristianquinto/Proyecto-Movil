@@ -1,150 +1,155 @@
+import 'package:esamen/screens/recuperar.dart';
 import 'package:flutter/material.dart';
 import 'package:esamen/screens/home_screen.dart';
+import 'package:esamen/main.dart'; // donde está tu MainApp con el BottomNavigationBar
+import 'package:provider/provider.dart';
+import '../controllers/auth_controller.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: SesionPage());
-  }
-}
 
 class SesionPage extends StatelessWidget {
   SesionPage({super.key});
 
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 245, 245, 245),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Image.asset(
-                "assets/images/logos/JRepuestos.jpg",
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
+      backgroundColor: const Color(0xFFF5F5F5),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // ================= HEADER =================
+            Container(
+              width: double.infinity,
+              height: 220,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/logos/JRepuestos.jpg"),
+                  fit: BoxFit.cover,
                 ),
-          Column(
-              children: [
-                const SizedBox(height: 180),
-                Text(
-                  'Bienvenido',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 30),
-                //desde aqui comienza el formulario
-                Form(
-                  key: _formKey, // llave del formulario
-                  //contenedor de todo el formulario
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 30,
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(left: 10),
-                        child: const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Correo electronico',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                        ),
-                      ),
+              ),
+            ),
 
-                      TextFormField(
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          hintText: "Ingresa tu correo electrónico",
-                          border: OutlineInputBorder(),
-                        ),
-                        // validación del campo
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "El correo electrónico es obligatorio";
-                          }
-                          return null;
-                        },
+            const SizedBox(height: 40),
+
+            // ================= TITLE =================
+            const Text(
+              'Bienvenido',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // ================= FORM =================
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    // EMAIL
+                    TextFormField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Correo electrónico',
+                        border: OutlineInputBorder(),
                       ),
-                      Container(
-                        height: 30,
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(left: 10),
-                        child: const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Contraseña',
-                            style: TextStyle(fontSize: 15),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El correo es obligatorio';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // PASSWORD
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Contraseña',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'La contraseña es obligatoria';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // ================= LOGIN BUTTON =================
+// ================= LOGIN BUTTON =================
+ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromRGBO(18, 128, 227, 1),
+    minimumSize: const Size(double.infinity, 50),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+  ),
+  onPressed: () {
+    if (_formKey.currentState!.validate()) {
+      final email = emailController.text;
+      final password = passwordController.text;
+
+      // LOGIN SIMULADO
+      if (email == 'admin@jtools.com' && password == '123456') {
+        // ✅ AQUÍ VA LA ÚLTIMA PARTE DE LA RECOMENDACIÓN
+        context.read<AuthController>().login();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Credenciales incorrectas'),
+          ),
+        );
+      }
+    }
+  },
+  child: const Text(
+    'Iniciar sesión',
+    style: TextStyle(fontSize: 16, color: Colors.white),
+  ),
+),
+
+
+                    const SizedBox(height: 20),
+
+                    // ================= FORGOT PASSWORD =================
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RestorePage(),
                           ),
+                        );
+                      },
+                      child: const Text(  
+                        '¿Olvidaste tu contraseña?',
+                        style: TextStyle(
+                          color: Color.fromRGBO(18, 128, 227, 1),
+                          decoration: TextDecoration.underline,
                         ),
                       ),
-                      TextFormField(
-                        controller: passwordController,
-                        decoration: const InputDecoration(
-                          hintText: "Ingresa tu contraseña",
-                          border: OutlineInputBorder(),
-                        ),
-                        // validación del campo
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "El contraseña es obligatorio";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          minimumSize: Size(
-                            double.infinity,
-                            50,
-                          ), // ancho completo
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            String email = emailController.text;
-                            String password = passwordController.text;
-                            // Simulación de login
-                            if (email == "admin@jtools.com" && password == "123456") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const HomeScreen()),
-                                );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Credenciales incorrectas")),
-                                    );
-                                  }
-                          }
-                        },
-                        child: const Text(
-                          "Enviar",
-                          style: TextStyle(color: Colors.black, fontSize: 20),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 20),
-                SizedBox(child: Text("¿olvidaste tu contraseña?")),
-              ]),
-        ]),
-        ]),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
