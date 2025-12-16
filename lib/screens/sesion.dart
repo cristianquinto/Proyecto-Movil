@@ -10,47 +10,62 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FormPage()
-      );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: SesionPage());
   }
 }
 
-class FormPage extends StatelessWidget {
-  FormPage({super.key});
+class SesionPage extends StatelessWidget {
+  SesionPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Color.fromARGB(255, 245, 245, 245),
-        body: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(15.0),
-              child: Image.asset("assets/images/logos/login.jpeg"),
-            ),
-            Padding( padding: EdgeInsets.all(20),
-            child:  Column(
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 245, 245, 245),
+      body: Column(
+        children: [
+          Stack(
+            children: [
+              Image.asset(
+                "assets/images/logos/JRepuestos.jpg",
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                ),
+          Column(
               children: [
-                Text('Bienvenido', style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-                SizedBox(height: 30,),
+                const SizedBox(height: 180),
+                Text(
+                  'Bienvenido',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 30),
+                //desde aqui comienza el formulario
                 Form(
                   key: _formKey, // llave del formulario
+                  //contenedor de todo el formulario
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container( height: 30, width: double.infinity, padding: const EdgeInsets.only(left: 10), 
-                      child: const Align( alignment: Alignment.centerLeft, 
-                      child: Text( 'Correo electronico', style: TextStyle(fontSize: 15),),
-                      ),
+                      Container(
+                        height: 30,
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(left: 10),
+                        child: const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Correo electronico',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
                       ),
 
                       TextFormField(
-                        decoration: const InputDecoration( 
+                        controller: emailController,
+                        decoration: const InputDecoration(
                           hintText: "Ingresa tu correo electrónico",
                           border: OutlineInputBorder(),
                         ),
@@ -62,12 +77,20 @@ class FormPage extends StatelessWidget {
                           return null;
                         },
                       ),
-                      Container( height: 30, width: double.infinity, padding: const EdgeInsets.only(left: 10), 
-                      child: const Align( alignment: Alignment.centerLeft, 
-                      child: Text( 'Contraseña', style: TextStyle(fontSize: 15),),
-                      ),
+                      Container(
+                        height: 30,
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(left: 10),
+                        child: const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Contraseña',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
                       ),
                       TextFormField(
+                        controller: passwordController,
                         decoration: const InputDecoration(
                           hintText: "Ingresa tu contraseña",
                           border: OutlineInputBorder(),
@@ -84,34 +107,44 @@ class FormPage extends StatelessWidget {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
-                          minimumSize: Size(double.infinity, 50), // ancho completo
+                          minimumSize: Size(
+                            double.infinity,
+                            50,
+                          ), // ancho completo
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Si todo está bien
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Formulario válido"),
-                              ),
-                            );
+                            String email = emailController.text;
+                            String password = passwordController.text;
+                            // Simulación de login
+                            if (email == "admin@jtools.com" && password == "123456") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Credenciales incorrectas")),
+                                    );
+                                  }
                           }
                         },
-                        child: const Text("Enviar", style: TextStyle(color: Colors.black, fontSize: 20, ),),
+                        child: const Text(
+                          "Enviar",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              SizedBox(height: 20,),
-              SizedBox(child: Text("¿olvidaste tu contraseña?"),),
-              ],
-            ),
-            ),
-          ],
-        ),
-      ),
+                SizedBox(height: 20),
+                SizedBox(child: Text("¿olvidaste tu contraseña?")),
+              ]),
+        ]),
+        ]),
     );
   }
 }
