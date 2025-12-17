@@ -8,6 +8,7 @@ import 'clientes/client_controller.dart';
 import 'clientes/client_list_page.dart';
 
 import 'screens/recuperar.dart';
+import 'screens/sesion.dart';
 
 // =========================================================
 // MÓDULOS DEL CATÁLOGO DE REPUESTOS (Nuevas Importaciones)
@@ -66,6 +67,8 @@ class _MainAppState extends State<MainApp> {
       _placeholder("Carrito"),
       PedidosPage(), // Módulo de Pedidos
       ClientListPage(), // Vista de clientes funcionando
+      SesionPage(),
+      RestorePage(),
       // 0. Pestaña de 'Inicio' (Tu vista original de 'Dulce Delicia' - No repuestos)
       _homeView(), 
       
