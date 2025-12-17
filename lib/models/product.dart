@@ -41,7 +41,8 @@ final List<Product> dummyProducts = [
     description:
         'Reduce el polvo y el ruido, excelente rendimiento.',
     price: 45.99,
-    imagePath: 'assets/images/pastillas_freno.jpg',
+    // si quiere poner imagenes diferentes solo cambie el nombre del archivo y asegurese de que este en la carpeta assets/images pero recuerde debe de cambiar el nombre del archivo de imagenes para que no tenga espacios
+    imagePath: 'assets/images/BIELETACLIO.jpg',
     partNumber: 'PF-2050-CER',
     compatibleVehicles: [
       'Ford Focus 2015-2021',
