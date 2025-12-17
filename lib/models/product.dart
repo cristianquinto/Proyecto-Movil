@@ -1,58 +1,66 @@
-// lib/models/product.dart
-
-/// Define la estructura de un repuesto (producto) en el catálogo.
 class Product {
   final String id;
   final String name;
   final String description;
   final double price;
-  final String imageUrl;
+  final String imagePath; // ASSET
   final String partNumber;
   final List<String> compatibleVehicles;
-  final String category; // Para filtros
+  final String category;
 
   Product({
     required this.id,
     required this.name,
     required this.description,
     required this.price,
-    required this.imageUrl,
+    required this.imagePath,
     required this.partNumber,
     required this.compatibleVehicles,
     required this.category,
   });
 }
 
-// Datos de ejemplo para poblar el catálogo
 final List<Product> dummyProducts = [
   Product(
     id: '1',
     name: 'Filtro de Aceite Sintético',
-    description: 'Filtro de alto rendimiento diseñado para aceites sintéticos, ofrece protección superior contra el desgaste.',
+    description:
+        'Filtro de alto rendimiento diseñado para aceites sintéticos.',
     price: 15.50,
-    imageUrl: 'https://ejemplo.com/filtro_aceite.jpg',
+    imagePath: 'assets/images/BIELETACLIO.jpg',
     partNumber: 'FA-1001-SYN',
-    compatibleVehicles: ['Toyota Corolla 2010-2020', 'Honda Civic 2012-2018'],
+    compatibleVehicles: [
+      'Toyota Corolla 2010-2020',
+      'Honda Civic 2012-2018',
+    ],
     category: 'Motor',
   ),
   Product(
     id: '2',
-    name: 'Pastillas de Freno Cerámicas (Juego)',
-    description: 'Compuesto cerámico que reduce el polvo y el ruido, manteniendo un rendimiento de frenado excepcional.',
+    name: 'Pastillas de Freno Cerámicas',
+    description:
+        'Reduce el polvo y el ruido, excelente rendimiento.',
     price: 45.99,
-    imageUrl: 'https://ejemplo.com/pastillas_freno.jpg',
+    // si quiere poner imagenes diferentes solo cambie el nombre del archivo y asegurese de que este en la carpeta assets/images pero recuerde debe de cambiar el nombre del archivo de imagenes para que no tenga espacios
+    imagePath: 'assets/images/BIELETACLIO.jpg',
     partNumber: 'PF-2050-CER',
-    compatibleVehicles: ['Ford Focus 2015-2021', 'Mazda 3 2014-2019'],
+    compatibleVehicles: [
+      'Ford Focus 2015-2021',
+      'Mazda 3 2014-2019',
+    ],
     category: 'Frenos',
   ),
   Product(
     id: '3',
     name: 'Amortiguador Trasero Gas',
-    description: 'Amortiguador de nitrógeno presurizado para un manejo estable y cómodo en todo tipo de terreno.',
+    description:
+        'Manejo estable y cómodo en todo terreno.',
     price: 78.00,
-    imageUrl: 'https://ejemplo.com/amortiguador.jpg',
+    imagePath: 'assets/images/amortiguador.jpg',
     partNumber: 'AM-5012-GAS',
-    compatibleVehicles: ['Nissan Sentra 2008-2016'],
+    compatibleVehicles: [
+      'Nissan Sentra 2008-2016',
+    ],
     category: 'Suspensión',
   ),
 ];

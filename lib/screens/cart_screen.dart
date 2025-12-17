@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
 
-const Color primaryColor = Color(0xFF81D4FA); // Azul Claro Corporativo
+const Color primaryColor = Color.fromRGBO(18, 128, 227, 1); // Azul Claro Corporativo
 
 // Simulación de datos de carrito
 final List<CartItem> dummyCartItems = [
@@ -24,7 +24,6 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mi Carrito', style: TextStyle(color: primaryColor)),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: primaryColor),
         elevation: 1,

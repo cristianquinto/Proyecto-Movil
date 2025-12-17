@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../clientes/client_controller.dart';
+import '../controllers/client_controller.dart';
 import 'client_detail_page.dart';
 import 'client_form_page.dart';
 
@@ -11,7 +11,6 @@ class ClientListPage extends StatelessWidget {
     TextEditingController searchCtrl = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Clientes")),
       body: Column(
         children: [
           Padding(

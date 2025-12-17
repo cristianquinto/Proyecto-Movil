@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../clientes/client_model.dart';
-import '../clientes/client_controller.dart';
+import '../models/client_model.dart';
+import '../controllers/client_controller.dart';
 import 'client_form_page.dart';
 
 class ClientDetailPage extends StatelessWidget {

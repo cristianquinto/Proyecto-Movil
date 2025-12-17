@@ -1,18 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: RestorePage());
-  }
-}
-
 class RestorePage extends StatelessWidget {
   RestorePage({super.key});
 
@@ -80,13 +67,13 @@ class RestorePage extends StatelessWidget {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Color.fromRGBO(18, 128, 227, 1),
                           minimumSize: Size(
                             double.infinity,
                             50,
                           ), // ancho completo
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                         onPressed: () {
@@ -94,14 +81,14 @@ class RestorePage extends StatelessWidget {
                             // Si todo está bien
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Formulario válido"),
+                                content: Text("Revisa tu correo electronico"),
                               ),
                             );
                           }
                         },
                         child: const Text(
                           "Enviar codigo de recuperación",
-                          style: TextStyle(color: Colors.black, fontSize: 20),
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                       ),
                     ],

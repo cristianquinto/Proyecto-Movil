@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pedido_model.dart';
+import '../../models/pedido_model.dart';
 
 class SeleccionarProductosPage extends StatefulWidget {
   const SeleccionarProductosPage({super.key});
