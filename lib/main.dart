@@ -7,6 +7,8 @@ import 'screens/pedidos/pedidos_page.dart';
 import 'controllers/client_controller.dart';
 import 'clientes/client_list_page.dart';
 import 'controllers/auth_controller.dart';
+import 'screens/product_list_screen.dart';
+
 
 import 'screens/recuperar.dart';
 import 'screens/sesion.dart';
@@ -66,6 +68,14 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const ProductListScreen(),
+    );
+  }
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});

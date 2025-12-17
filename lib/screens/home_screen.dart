@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildWelcomeCard(BuildContext context) {
     return Card(
-      color: Color.fromRGBO(18, 129, 227, 1), // Fondo sutil
+      color: Color.fromRGBO(18, 129, 227, 0.082), // Fondo sutil
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(

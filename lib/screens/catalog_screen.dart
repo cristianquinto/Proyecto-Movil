@@ -82,7 +82,7 @@ class ProductGridItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                Image.asset('assets/images/BIELETACLIO.jpg')
+                Image.asset 'assets/images/BIELETACLIO.jpg'
                 // Aquí iría Image.network(product.imageUrl) si tuvieses una imagen
               ),
               alignment: Alignment.center,
